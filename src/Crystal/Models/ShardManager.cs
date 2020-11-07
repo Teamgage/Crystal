@@ -20,7 +20,7 @@ namespace Crystal.Models
             _shards = new ConcurrentDictionary<TKey, Shard<TKey>>();
         }
         
-        public string CurrentDbName => _options.ModelDbName ?? _shards[CurrentKey].DbName;
+        public string CurrentDbName => _options.ModelDbConnectionString ?? _shards[CurrentKey].ConnectionString;
 
         public void AddShard(Shard<TKey> shard)
         {

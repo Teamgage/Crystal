@@ -22,11 +22,11 @@ namespace Crystal.Models
             _contextFactory = contextFactory;
         }
 
-        public TContext CreateDbContext(string[] args)
+        public virtual TContext CreateDbContext(string[] args)
         {
             var options = new ShardManagerOptions<TKey>
             {
-                ModelDbName = _modelDbName
+                ModelDbConnectionString = _modelDbName
             };
             
             var shardManager = new ShardManager<TKey>(options);

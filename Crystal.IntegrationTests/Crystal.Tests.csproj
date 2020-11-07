@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Crystal.DbProviders\Crystal.DbProviders.csproj" />
     <ProjectReference Include="..\src\Crystal\Crystal.csproj" />
   </ItemGroup>
 

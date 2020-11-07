@@ -21,16 +21,16 @@ namespace Crystal.DbProviders
             database.EnsureCreated();
         }
 
-        public void UseDatabase(DbContextOptionsBuilder optionsBuilder, string dbName)
+        public void UseDatabase(DbContextOptionsBuilder optionsBuilder, string connectionString)
         {
-            if (!_connections.ContainsKey(dbName))
+            if (!_connections.ContainsKey(connectionString))
             {
-                var conn = new SqliteConnection(ConnectionString(dbName));
-                _connections[dbName] = conn;
+                var conn = new SqliteConnection(ConnectionString(connectionString));
+                _connections[connectionString] = conn;
                 conn.Open();
             }
 
-            optionsBuilder.UseSqlite(ConnectionString(dbName));
+            optionsBuilder.UseSqlite(ConnectionString(connectionString));
         }
 
         public void Dispose()
@@ -42,9 +42,9 @@ namespace Crystal.DbProviders
             }
         }
 
-        private string ConnectionString(string dbName) => new SqliteConnectionStringBuilder
+        private string ConnectionString(string connectionString) => new SqliteConnectionStringBuilder
         {
-            DataSource = $"TestDb-{dbName}",
+            DataSource = $"TestDb-{connectionString}",
             Mode = SqliteOpenMode.Memory,
             Cache = SqliteCacheMode.Shared
         }.ToString();
