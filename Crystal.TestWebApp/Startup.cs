@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Crystal.Ioc;
 using Crystal.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,12 @@ namespace Crystal.TestWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.UseCrystal(context =>
+            {
+                var tenantId = context.Request.Query["TenantId"];
+                return long.TryParse(tenantId, out var parsedId) ? parsedId : 0;
+            });
+            
             services.AddControllers();
         }
 

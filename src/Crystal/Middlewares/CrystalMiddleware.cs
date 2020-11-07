@@ -3,6 +3,7 @@ using Crystal.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
+using Crystal.Models;
 
 namespace Crystal.Middlewares
 {
@@ -17,14 +18,14 @@ namespace Crystal.Middlewares
 
         public async Task Invoke(
             HttpContext context,
-            Func<HttpContext, TKey> keyExtractor,
+            ShardKeyExtractor<TKey> keyExtractor,
             IShardManager<TKey> shardManager)
         {
             TKey key;
 
             try
             {
-                key = keyExtractor.Invoke(context);
+                key = keyExtractor.Delegate.Invoke(context);
             }
             catch (Exception)
             {

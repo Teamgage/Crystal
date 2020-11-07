@@ -20,7 +20,7 @@ namespace Crystal.Models
             _shards = new ConcurrentDictionary<TKey, Shard<TKey>>();
         }
         
-        public string CurrentDbName => _shards[CurrentKey].DbName;
+        public string CurrentDbName => _options.ModelDbName ?? _shards[CurrentKey].DbName;
 
         public void AddShard(Shard<TKey> shard)
         {
@@ -62,12 +62,7 @@ namespace Crystal.Models
 
         public bool ValidateKey(TKey key)
         {
-            if (_options?.KeyValidator == null)
-            {
-                return true;
-            }
-
-            return _options.KeyValidator.Invoke(key);
+            return _options?.KeyValidator == null || _options.KeyValidator.Invoke(key);
         }
     }
 }
