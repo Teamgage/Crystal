@@ -22,7 +22,11 @@ namespace Crystal.Ioc
                 Delegate = keyExtractor
             };
 
-            serviceCollection.AddSingleton(shardManagerOptions);
+            if (shardManagerOptions == null)
+            {
+                serviceCollection.AddSingleton(shardManagerOptions);
+            }
+
             serviceCollection.AddSingleton(shardKeyExtractor);
             serviceCollection.AddScoped<IShardManager<TKey>, ShardManager<TKey>>();
             

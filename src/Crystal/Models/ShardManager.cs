@@ -1,5 +1,7 @@
 ﻿using Crystal.Exceptions;
 using Crystal.Interfaces;
+using Crystal.ShardStorage;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Concurrent;
 
@@ -9,18 +11,32 @@ namespace Crystal.Models
     {
         private readonly ShardManagerOptions<TKey> _options;
         private readonly ConcurrentDictionary<TKey, Shard<TKey>> _shards;
+        private readonly IShardStorage<TKey> _shardStorage;
+
         public TKey CurrentKey { get; private set; }
         
         public ShardManager()
-            : this(null) { }
+            : this(new ShardManagerOptions<TKey>()) { }
 
         public ShardManager(ShardManagerOptions<TKey> options)
         {
             _options = options;
             _shards = new ConcurrentDictionary<TKey, Shard<TKey>>();
+
+            switch (options.ShardStorageType)
+            {
+                case ShardStorageType.SqlServer:
+                    _shardStorage = new SqlServerShardStorage<TKey>(options.ShardManagerDbConnectionString);
+                    break;
+                case ShardStorageType.Custom:
+                    _shardStorage = options.ShardStorageFactory.Invoke();
+                    break;
+            }
+
+            _shardStorage.Load();
         }
         
-        public string CurrentDbName => _options.ModelDbConnectionString ?? _shards[CurrentKey].ConnectionString;
+        public string CurrentDbName => _options?.ModelDbConnectionString ?? _shards[CurrentKey].ConnectionString;
 
         public void AddShard(Shard<TKey> shard)
         {
@@ -35,6 +51,7 @@ namespace Crystal.Models
             }
 
             _shards[shard.Key] = shard;
+            _shardStorage.Add(shard);
         }
 
         public void DeleteShard(TKey key)
@@ -48,6 +65,8 @@ namespace Crystal.Models
             {
                 throw new Exception($"Could not remove shard with key: {key}");
             }
+
+            _shardStorage.Remove(key);
         }
 
         public void SetCurrentShard(TKey key)
