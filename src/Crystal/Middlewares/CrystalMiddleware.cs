@@ -2,6 +2,7 @@
 using Crystal.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Crystal.Models;
 
@@ -18,14 +19,20 @@ namespace Crystal.Middlewares
 
         public async Task Invoke(
             HttpContext context,
-            ShardKeyExtractor<TKey> keyExtractor,
+            ShardManagerOptions<TKey> options,
             IShardManager<TKey> shardManager)
         {
+            if (options.RouteExceptions.Any(context.Request.Path.Value.Contains))
+            {
+                await _next(context);
+                return;
+            }
+            
             TKey key;
 
             try
             {
-                key = keyExtractor.Delegate.Invoke(context);
+                key = options.KeyExtractorDelegate.Invoke(context);
             }
             catch (Exception)
             {

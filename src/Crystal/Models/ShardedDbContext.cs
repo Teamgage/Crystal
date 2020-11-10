@@ -16,7 +16,7 @@ namespace Crystal.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            _dbProvider.UseDatabase(optionsBuilder, _shardManager.CurrentDbName);
+            _dbProvider.UseDatabase(optionsBuilder, _shardManager.CurrentConnectionString);
         }
     }
 }

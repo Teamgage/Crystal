@@ -12,19 +12,6 @@
     <e p="C:\Users\MatthewAstachnowicz\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
     <e p="C:\Users\MatthewAstachnowicz\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_Crystal.-30164311.00" t="ExcludeRecursive" />
     <e p="C:\Users\MatthewAstachnowicz\source\repos\Crystal" t="IncludeFlat">
-      <e p="Crystal.DbProviders" t="IncludeRecursive">
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="Crystal.DbProviders.csproj" t="IncludeRecursive" />
-        <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
-            <e p="netstandard2.0" t="Include">
-              <e p="Crystal.DbProviders.AssemblyInfo.cs" t="Include" />
-            </e>
-          </e>
-        </e>
-        <e p="SqliteMemoryDbProvider.cs" t="Include" />
-        <e p="SqlServerDbProvider.cs" t="Include" />
-      </e>
       <e p="Crystal.IntegrationTests" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="Crystal.Tests.csproj" t="IncludeRecursive" />
@@ -48,6 +35,7 @@
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="Controllers" t="Include">
+          <e p="AdminController.cs" t="Include" />
           <e p="EntityController.cs" t="Include" />
         </e>
         <e p="Crystal.TestWebApp.csproj" t="IncludeRecursive" />
@@ -55,6 +43,11 @@
           <e p="AppContext.cs" t="Include" />
           <e p="DesignTimeAppContextFactory.cs" t="Include" />
           <e p="GenericRepository.cs" t="Include" />
+          <e p="Migrations" t="Include">
+            <e p="20201107002057_IntialCreate.cs" t="Include" />
+            <e p="20201107002057_IntialCreate.Designer.cs" t="Include" />
+            <e p="AppContextModelSnapshot.cs" t="Include" />
+          </e>
         </e>
         <e p="Interfaces" t="Include">
           <e p="IGenericRepository.cs" t="Include" />
@@ -79,12 +72,18 @@
       <e p="src\Crystal" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="Crystal.csproj" t="IncludeRecursive" />
+        <e p="DbProviders" t="Include">
+          <e p="SqliteMemoryDbProvider.cs" t="Include" />
+          <e p="SqlServerDbProvider.cs" t="Include" />
+        </e>
         <e p="Exceptions" t="Include">
           <e p="ShardKeyException.cs" t="Include" />
         </e>
         <e p="Interfaces" t="Include">
           <e p="IDbProvider.cs" t="Include" />
           <e p="IShardManager.cs" t="Include" />
+          <e p="IShardMigrator.cs" t="Include" />
+          <e p="IShardStorage.cs" t="Include" />
         </e>
         <e p="Ioc" t="Include">
           <e p="ServiceCollectionExtensions.cs" t="Include" />
@@ -99,6 +98,7 @@
           <e p="ShardKeyExtractor.cs" t="Include" />
           <e p="ShardManager.cs" t="Include" />
           <e p="ShardManagerOptions.cs" t="Include" />
+          <e p="ShardMigrator.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -106,6 +106,10 @@
               <e p="Crystal.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
+        </e>
+        <e p="ShardStorage" t="Include">
+          <e p="ListShardStorage.cs" t="Include" />
+          <e p="SqlServerShardStorage.cs" t="Include" />
         </e>
       </e>
     </e>

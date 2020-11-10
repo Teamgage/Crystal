@@ -1,9 +1,9 @@
 ﻿using Crystal.Exceptions;
 using Crystal.Interfaces;
 using Crystal.ShardStorage;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Crystal.Models
 {
@@ -14,9 +14,6 @@ namespace Crystal.Models
         private readonly IShardStorage<TKey> _shardStorage;
 
         public TKey CurrentKey { get; private set; }
-        
-        public ShardManager()
-            : this(new ShardManagerOptions<TKey>()) { }
 
         public ShardManager(ShardManagerOptions<TKey> options)
         {
@@ -25,18 +22,30 @@ namespace Crystal.Models
 
             switch (options.ShardStorageType)
             {
+                case ShardStorageType.List:
+                    _shardStorage = new ListShardStorage<TKey>(options.Shards);
+                    break;
                 case ShardStorageType.SqlServer:
                     _shardStorage = new SqlServerShardStorage<TKey>(options.ShardManagerDbConnectionString);
                     break;
                 case ShardStorageType.Custom:
                     _shardStorage = options.ShardStorageFactory.Invoke();
                     break;
+                default:
+                    throw new Exception("Shard storage type must be provided");
             }
 
-            _shardStorage.Load();
+            var initialShards = _shardStorage.Load();
+
+            foreach (var shard in initialShards)
+            {
+                _shards[shard.Key] = shard;
+            }
         }
+
+        public IEnumerable<TKey> AllKeys => _shards.Keys;
         
-        public string CurrentDbName => _options?.ModelDbConnectionString ?? _shards[CurrentKey].ConnectionString;
+        public string CurrentConnectionString => _options?.ModelDbConnectionString ?? _shards[CurrentKey].ConnectionString;
 
         public void AddShard(Shard<TKey> shard)
         {

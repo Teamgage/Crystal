@@ -1,6 +1,5 @@
 ﻿using System;
 using Crystal.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Crystal.Models
@@ -8,16 +7,16 @@ namespace Crystal.Models
     public class ShardedDbContextFactory<TContext, TKey> : IDesignTimeDbContextFactory<TContext>
         where TContext : ShardedDbContext<TKey>
     {
-        private readonly string _modelDbName;
+        private readonly string _connectionString;
         private readonly IDbProvider _dbProvider;
         private readonly Func<IShardManager<TKey>, IDbProvider, TContext> _contextFactory;
 
         public ShardedDbContextFactory(
-            string modelDbName,
+            string connectionString,
             IDbProvider dbProvider,
             Func<IShardManager<TKey>, IDbProvider, TContext> contextFactory)
         {
-            _modelDbName = modelDbName;
+            _connectionString = connectionString;
             _dbProvider = dbProvider;
             _contextFactory = contextFactory;
         }
@@ -26,7 +25,7 @@ namespace Crystal.Models
         {
             var options = new ShardManagerOptions<TKey>
             {
-                ModelDbConnectionString = _modelDbName
+                ModelDbConnectionString = _connectionString
             };
             
             var shardManager = new ShardManager<TKey>(options);

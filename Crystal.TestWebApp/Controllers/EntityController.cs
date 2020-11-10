@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Crystal.TestWebApp.Controllers
 {
     [ApiController]
+    [Route("api/entities")]
     public class EntityController : ControllerBase
     {
         private readonly IGenericRepository<Entity> _entityRepository;
@@ -15,14 +16,12 @@ namespace Crystal.TestWebApp.Controllers
         }
         
         [HttpGet]
-        [Route("api/entities")]
-        public IActionResult GetAll()
+        public IActionResult Index()
         {
             return Ok(_entityRepository.GetAll());
         }
 
         [HttpPost]
-        [Route("api/entities")]
         public IActionResult Create(Entity entity)
         {
             _entityRepository.Insert(entity);

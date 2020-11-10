@@ -13,7 +13,7 @@ namespace Crystal.IntegrationTests
         [TestInitialize]
         public void SetUp()
         {
-            _sut = new ShardManager<long>();
+            _sut = new ShardManager<long>(new ShardManagerOptions<long>());
         }
 
         [TestMethod]
@@ -66,7 +66,7 @@ namespace Crystal.IntegrationTests
             _sut.SetCurrentShard(1);
 
             Assert.AreEqual(1, _sut.CurrentKey);
-            Assert.AreEqual("dbOne", _sut.CurrentDbName);
+            Assert.AreEqual("dbOne", _sut.CurrentConnectionString);
         }
 
         [TestMethod]
