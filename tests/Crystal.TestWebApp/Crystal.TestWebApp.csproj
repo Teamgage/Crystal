@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Crystal\Crystal.csproj" />
     <ProjectReference Include="..\src\Crystal\Crystal.csproj" />
   </ItemGroup>
 
