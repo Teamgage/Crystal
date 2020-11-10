@@ -26,6 +26,7 @@ namespace Crystal.ShardStorage
             {
                 using (var command = new SqlCommand(query, conn))
                 {
+                    conn.Open();
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -55,6 +56,7 @@ namespace Crystal.ShardStorage
             {
                 using (var command = new SqlCommand(query, conn))
                 {
+                    conn.Open();
                     command.Parameters.AddWithValue("@key", shard.Key);
                     command.Parameters.AddWithValue("@connectionString", shard.ConnectionString);
                     command.ExecuteNonQuery();
@@ -64,12 +66,13 @@ namespace Crystal.ShardStorage
 
         public void Remove(TKey key)
         {
-            const string query = @"DELET FROM [dbo].[__shards] WHERE [Key] = @key";
+            const string query = @"DELETE FROM [dbo].[__shards] WHERE [Key] = @key";
 
             using (var conn = new SqlConnection(_connectionString))
             {
                 using (var command = new SqlCommand(query, conn))
                 {
+                    conn.Open();
                     command.Parameters.AddWithValue("@key", key);
                     command.ExecuteNonQuery();
                 }
@@ -78,36 +81,37 @@ namespace Crystal.ShardStorage
 
         private void EnsureTableCreated()
         {
+            string keyType;
+
+            if (typeof(TKey) == typeof(int))
+            {
+                keyType = "INT";
+            }
+            else if (typeof(TKey) == typeof(long))
+            {
+                keyType = "BIGINT";
+            }
+            else if (typeof(TKey) == typeof(string))
+            {
+                keyType = "VARCHAR";
+            }
+            else
+            {
+                throw new Exception("Only key types of int, long and string are accepted");
+            }
+            
             using (var conn = new SqlConnection(_connectionString))
             {
-                string keyType;
-
-                if (typeof(TKey) == typeof(int))
-                {
-                    keyType = "INT";
-                }
-                else if (typeof(TKey) == typeof(long))
-                {
-                    keyType = "BIGINT";
-                }
-                else if (typeof(TKey) == typeof(string))
-                {
-                    keyType = "VARCHAR";
-                }
-                else
-                {
-                    throw new Exception("Only key types of int, long and string are accepted");
-                }
-
                 var ensureTableCreatedCommand = $@"
                     IF NOT EXISTS (SELECT * from [dbo].[sysobjects] WHERE [name]='__shards' AND [xtype]='U')
                         CREATE TABLE [dbo].[__shards] (
                             [Key] {keyType} NOT NULL,
-                            [ConnectionString] VARCHAR NOT NULL
+                            [ConnectionString] VARCHAR(MAX) NOT NULL
                         )";
 
-                using (var command = new SqlCommand(ensureTableCreatedCommand))
+                using (var command = new SqlCommand(ensureTableCreatedCommand, conn))
                 {
+                    conn.Open();
                     command.ExecuteNonQuery();
                 }
             }

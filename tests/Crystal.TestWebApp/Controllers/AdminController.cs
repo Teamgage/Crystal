@@ -34,10 +34,16 @@ namespace Crystal.TestWebApp.Controllers
 
         [HttpPost]
         [Route("shards")]
-        public IActionResult CreateShard(Shard<long> shard)
+        public IActionResult CreateShard(ShardApiModel<long> shard)
         {
-            _shardManager.AddShard(shard);
+            _shardManager.AddShard(new Shard<long>(shard.Key, shard.ConnectionString));
             return Ok();
         }
+    }
+
+    public class ShardApiModel<TKey>
+    {
+        public TKey Key { get; set; }
+        public string ConnectionString { get; set; }
     }
 }
